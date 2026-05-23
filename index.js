@@ -103,14 +103,26 @@
 // });
 
 require("dotenv").config();
+
+const cors = require("cors");
 const express = require("express");
 const nodemailer = require("nodemailer");
 
 const app = express();
-app.use(express.json());
+
 app.use(cors({
-  origin: "*"
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"]
 }));
+
+app.use(express.json());
+
+
+// 👇 هنا مباشرة
+console.log("APP STARTED");
+console.log("SMTP_USER:", process.env.SMTP_USER);
+console.log("SMTP_PASS:", process.env.SMTP_PASS);
 
 const transport = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
