@@ -2,6 +2,16 @@ const nodemailer = require("nodemailer");
 
 module.exports = async (req, res) => {
 
+    // ✅ CORS FIX (مهم جدًا)
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+
+    // preflight request
+    if (req.method === "OPTIONS") {
+        return res.status(200).end();
+    }
+
     if (req.method !== "POST") {
         return res.status(405).json({
             message: "Method not allowed"
@@ -26,7 +36,6 @@ module.exports = async (req, res) => {
             from: "anfahmy92@gmail.com",
             to,
             subject: "Confirm Ticket",
-
             html: `
                 <div>
                     <h2>${eventName}</h2>
@@ -40,7 +49,6 @@ module.exports = async (req, res) => {
         });
 
     } catch (error) {
-
         console.log(error);
 
         return res.status(500).json({
@@ -48,5 +56,4 @@ module.exports = async (req, res) => {
             error: error.message
         });
     }
-
 };
