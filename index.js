@@ -132,11 +132,13 @@ app.get("/", (req, res) => {
 
 // send email route
 app.post("/send-email", async (req, res) => {
-  try {
-    const { to, userName, eventName } = req.body;
+  const { to, userName, eventName } = req.body;
 
-    const info = await transport.sendMail({
-      from: process.env.SMTP_USER,
+  res.json({ status: "processing" }); // رد سريع
+
+  try {
+    await transport.sendMail({
+      from: "anfahmy92@gmail.com",
       to,
       subject: `Graduation - ${eventName}`,
       html: `
@@ -145,22 +147,13 @@ app.post("/send-email", async (req, res) => {
       `
     });
 
-    return res.json({
-      status: "success",
-      info: info.response
-    });
-
+    console.log("Email sent");
   } catch (err) {
-    console.log(err);
-
-    return res.status(500).json({
-      status: "error",
-      message: err.message
-    });
+    console.log("Email error:", err.message);
   }
 });
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log("Server running on", PORT);
