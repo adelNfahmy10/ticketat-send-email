@@ -138,7 +138,7 @@ app.post("/send-email", async (req, res) => {
 
   try {
     await transport.sendMail({
-      from: "anfahmy92@gmail.com",
+      from: process.env.SMTP_USER,
       to,
       subject: `Graduation - ${eventName}`,
       html: `
