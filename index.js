@@ -147,8 +147,10 @@ app.post("/send-email", async (req, res) => {
       `
     });
 
+    res.json({ Success: "Email sent" });
     console.log("Email sent");
   } catch (err) {
+    res.json({ Error: err.message });
     console.log("Email error:", err.message);
   }
 });
