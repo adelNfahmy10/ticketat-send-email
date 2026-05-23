@@ -2,12 +2,6 @@
 
 // const nodemailer = require("nodemailer");
 
-// const PORT = process.env.PORT || 3000;
-
-// app.listen(PORT, () => {
-//   console.log("Server running on", PORT);
-// });
-
 // const transport = nodemailer.createTransport({
 //   host: "smtp-relay.brevo.com",
 //   port: 587,
@@ -108,7 +102,6 @@
 //   }
 // });
 
-
 require("dotenv").config();
 const express = require("express");
 const nodemailer = require("nodemailer");
@@ -126,32 +119,34 @@ const transport = nodemailer.createTransport({
   }
 });
 
+// test route
+app.get("/", (req, res) => {
+  res.json({ status: "server running 🚀" });
+});
+
+// send email route
 app.post("/send-email", async (req, res) => {
   try {
     const { to, userName, eventName } = req.body;
 
-    const html = `
-      <div>
-        <h2>🎓 ${eventName}</h2>
-        <p>Dear Student <b>${userName}</b></p>
-      </div>
-    `;
-
     const info = await transport.sendMail({
       from: process.env.SMTP_USER,
       to,
-      subject: "Test Email",
-      html
+      subject: `Graduation - ${eventName}`,
+      html: `
+        <h2>🎓 ${eventName}</h2>
+        <p>Dear ${userName}</p>
+      `
     });
 
     return res.json({
       status: "success",
-      message: "Email sent",
       info: info.response
     });
 
   } catch (err) {
     console.log(err);
+
     return res.status(500).json({
       status: "error",
       message: err.message
