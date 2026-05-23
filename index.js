@@ -103,19 +103,10 @@
 // });
 
 require("dotenv").config();
-
-const cors = require("cors");
 const express = require("express");
 const nodemailer = require("nodemailer");
 
 const app = express();
-
-app.use(cors({
-  origin: "*",
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
 app.use(express.json());
 
 
@@ -141,14 +132,14 @@ app.get("/", (req, res) => {
 
 // send email route
 app.post("/send-email", async (req, res) => {
-  const { to, userName, eventName } = req.body;
+  const { userEmail, userName, eventName } = req.body;
 
   res.json({ status: "processing" }); // رد سريع
 
   try {
     await transport.sendMail({
       from: "anfahmy92@gmail.com",
-      to,
+      to: userEmail,
       subject: `Graduation - ${eventName}`,
       html: `
         <h2>🎓 ${eventName}</h2>
