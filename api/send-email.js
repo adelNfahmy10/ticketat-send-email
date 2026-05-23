@@ -33,88 +33,63 @@ module.exports = async (req, res) => {
         });
 
         await transport.sendMail({
-            from: "anfahmy92@gmail.com",
+            from: "Ticketat.eg",
             to,
             subject: "Confirm Your Ticket",
-              html: `
-                  <div style="font-family: Arial, sans-serif; font-size: 14px; background:#f4f6f8; padding: 20px;">
+            html: `
+              <div style="font-family: Arial, sans-serif; font-size: 14px; background:#f4f6f8; padding: 20px;">
 
-                  <!-- HEADER -->
-                  <div style="padding: 15px 0; border-top: 1px dashed #ddd; border-bottom: 1px dashed #ddd; margin-bottom: 20px;">
-                      <table role="presentation" style="width: 100%;">
-                      <tr>
-                          <td style="vertical-align: middle; width: 110px;">
-                          <img 
-                              src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" 
-                              style="width: 80px; display: block;"
-                          >
-                          </td>
+                <div style="padding: 15px 0; border-top: 1px dashed #ddd; border-bottom: 1px dashed #ddd; margin-bottom: 20px;">
+                  <table role="presentation" style="width: 100%;">
+                    <tr>
+                      <td style="vertical-align: middle; width: 110px;">
+                        <img src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" style="width: 80px; display: block;">
+                      </td>
 
-                          <td style="vertical-align: middle;">
-                          <div style="color:#2c3e50; font-size:18px; font-weight:700;">
-                              Ticketateg
-                          </div>
-                          <div style="color:#777; font-size:13px; margin-top:3px;">
-                              Check Your Ticket
-                          </div>
-                          </td>
-                      </tr>
-                      </table>
-                  </div>
+                      <td>
+                        <div style="color:#2c3e50; font-size:18px; font-weight:700;">
+                          Ticketateg
+                        </div>
+                        <div style="color:#777; font-size:13px;">
+                          Check Your Ticket
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
 
-                  <!-- BODY CARD -->
-                  <div style="max-width:600px; margin:auto; background:#ffffff; padding:25px; border-radius:10px;">
+                <div style="max-width:600px; margin:auto; background:#ffffff; padding:25px; border-radius:10px;">
 
-                      <h2 style="text-align:center; color:#2c3e50; margin-bottom:20px;">
-                      🎓 {{eventName}}
-                      </h2>
+                  <h2 style="text-align:center; color:#2c3e50;">
+                    🎓 ${eventName}
+                  </h2>
 
-                      <p>Dear Student <strong>{{userName}}</strong>,</p>
+                  <p>Dear Student <strong>${userName}</strong>,</p>
 
-                      <p>
-                      Thank you for completing the down payment for <strong>{{eventName}}</strong>. 
-                      We are excited to be part of this special milestone with you 🎓
-                      </p>
+                  <p>
+                    Thank you for completing the down payment for <strong>${eventName}</strong>.
+                  </p>
 
-                      <p>
-                      Please note that the graduation package collection date will be coordinated with your class representative.
-                      Updates will be shared via WhatsApp group.
-                      </p>
+                  <hr style="margin:20px 0;">
 
-                      <p><strong>Kindly note:</strong> Booking for companions is currently not available.</p>
+                  <h3 style="text-align:right;">عزيزنا الطالب/الطالبة</h3>
 
-                      <p>
-                      The second down payment date will be announced later. At that stage, companion booking will open and your QR code will be sent.
-                      </p>
+                  <p style="text-align:right;">
+                    نشكرك على إتمام دفع عربون حفل <strong>${eventName}</strong> 🎓
+                  </p>
 
-                      <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+                  <p style="text-align:right;">
+                    مع أطيب التمنيات<br>
+                    <strong>Remold Events</strong>
+                  </p>
 
-                      <h3 style="text-align:right; color:#2c3e50;">عزيزنا الطالب/الطالبة</h3>
-                      
-                      <p style="text-align:right; direction='rtl'">
-                      نشكرك على إتمام دفع عربون حفل <strong>{{eventName}}</strong> 🎓
-                      </p>
-
-                      <p style="text-align:right;">
-                      سيتم تحديد موعد استلام الباكدج بالتنسيق مع ممثل الدفعة وسيتم الإبلاغ عبر جروب الواتساب
-                      </p>
-
-                      <p style="text-align:right;">
-                      لا يمكن حجز مرافقين حالياً، وسيتم فتح ذلك لاحقاً مع الدفع الثاني
-                      </p>
-
-                      <p style="text-align:right;">
-                      مع أطيب التمنيات<br><br>
-                      <strong>Remold Events</strong>
-                      </p>
-
-                  </div>
-                  </div>
-                `
+                </div>
+              </div>
+            `
         });
 
         return res.status(200).json({
-            success: true
+          success: true
         });
 
     } catch (error) {
