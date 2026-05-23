@@ -132,14 +132,14 @@ app.get("/", (req, res) => {
 
 // send email route
 app.post("/send-email", async (req, res) => {
-  const { userEmail, userName, eventName } = req.body;
+  const { to, userName, eventName } = req.body;
 
   res.json({ status: "processing" }); // رد سريع
 
   try {
     await transport.sendMail({
       from: "anfahmy92@gmail.com",
-      to: userEmail,
+      to,
       subject: `Graduation - ${eventName}`,
       html: `
         <h2>🎓 ${eventName}</h2>
