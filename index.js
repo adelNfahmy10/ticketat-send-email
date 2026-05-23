@@ -108,12 +108,9 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 app.use(express.json());
-
-
-// 👇 هنا مباشرة
-console.log("APP STARTED");
-console.log("SMTP_USER:", process.env.SMTP_USER);
-console.log("SMTP_PASS:", process.env.SMTP_PASS);
+app.use(cors({
+  origin: "*"
+}));
 
 const transport = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
