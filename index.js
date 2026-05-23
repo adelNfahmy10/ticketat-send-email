@@ -127,6 +127,8 @@ app.get("/", (req, res) => {
 // send email route
 app.post("/send-email", async (req, res) => {
   try {
+    console.log("SMTP_USER:", process.env.SMTP_USER);
+    console.log("SMTP_PASS:", process.env.SMTP_PASS);
     const { to, userName, eventName } = req.body;
 
     const info = await transport.sendMail({
