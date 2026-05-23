@@ -33,7 +33,7 @@ module.exports = async (req, res) => {
         });
 
         await transport.sendMail({
-            from: "Ticketat.eg",
+            from: "Ticketat.eg <anfahmy92@gmail.com>",
             to,
             subject: "Confirm Your Ticket",
             html: `
