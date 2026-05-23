@@ -15,7 +15,7 @@
 // const mailOptions = {
 //   from: "anfahmy92@gmail.com",
 //   to: "adelnasserfahmy@gmail.com",
-//   subject: "Test Email",
+//   subject: "Confirm Ticket",
   
 //   html: `
 //     <div style="font-family: Arial, sans-serif; font-size: 14px; background:#f4f6f8; padding: 20px;">
@@ -102,61 +102,86 @@
 //   }
 // });
 
+
 require("dotenv").config();
+
 const express = require("express");
 const nodemailer = require("nodemailer");
 
 const app = express();
+
 app.use(express.json());
-
-
-// 👇 هنا مباشرة
-console.log("APP STARTED");
-console.log("SMTP_USER:", process.env.SMTP_USER);
-console.log("SMTP_PASS:", process.env.SMTP_PASS);
 
 const transport = nodemailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
   secure: false,
   auth: {
-    user: process.env.SMTP_USER || "",
-    pass: process.env.SMTP_PASS || ""
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS
   }
 });
 
-// test route
+// اختبار
 app.get("/", (req, res) => {
-  res.json({ status: "server running 🚀" });
+  res.json({
+    message: "Server running 🚀"
+  });
 });
 
-// send email route
 app.post("/send-email", async (req, res) => {
-  const { to, userName, eventName } = req.body;
-
-  res.json({ status: "processing" }); // رد سريع
-
   try {
-    await transport.sendMail({
-      from: "anfahmy92@gmail.com",
+
+    const {
       to,
-      subject: `Graduation - ${eventName}`,
+      userName,
+      eventName
+    } = req.body;
+
+    const mailOptions = {
+      from: process.env.SMTP_USER,
+      to,
+      subject: "Confirm Ticket",
+
       html: `
+      <div style="font-family: Arial, sans-serif; font-size:14px;">
+
         <h2>🎓 ${eventName}</h2>
-        <p>Dear ${userName}</p>
+
+        <p>
+          Dear <strong>${userName}</strong>
+        </p>
+
+        <p>
+          Thank you for completing payment
+        </p>
+
+      </div>
       `
+    };
+
+    const info = await transport.sendMail(mailOptions);
+
+    res.status(200).json({
+      success: true,
+      message: "Email sent successfully",
+      response: info.response
     });
 
-    res.json({ Success: "Email sent" });
-    console.log("Email sent");
   } catch (err) {
-    res.json({ Error: err.message });
-    console.log("Email error:", err.message);
+
+    console.log(err);
+
+    res.status(500).json({
+      success: false,
+      error: err.message
+    });
+
   }
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, "0.0.0.0", () => {
-  console.log("Server running on", PORT);
+  console.log(`Server running on ${PORT}`);
 });
