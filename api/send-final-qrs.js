@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
 
         const { to, name, eventName, qrs } = req.body;
 
-        const BASE_URL = 'https://www.ticketateg.com';
+        const BASE_URL = 'https://www.ticketateg.com/#';
 
         const transport = nodemailer.createTransport({
             host: "smtp-relay.brevo.com",
