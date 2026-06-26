@@ -42,14 +42,12 @@ module.exports = async (req, res) => {
                 <div style="max-width:700px;margin:auto;background:#ffffff;border-radius:12px;padding:15px;border:1px solid #e5e5e5;">
 
                     <!-- Logos -->
-                    <div  >
-                        <div style="display:flex; align-items:center; gap:10px; width: 100%;">
-                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" alt="Ticketat" style=" width:100px; height:100px; object-fit:contain; filter: drop-shadow(0 0 5px #2563EB);" />
-                            <h5 style="color:#7C3AED">Ticketat.eg</h5>
+                    <div style="display:flex;justify-content: center; align-items:center; gap:10px; width: 100%; height: 100%;">
+                        <div>
+                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" alt="Ticketat" style=" width:100px; height:100px; object-fit:contain;" />
                         </div>
-                        <div style="display:flex; align-items:center; gap:10px; width: 100%;">
-                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1782442502/remold-events-removebg-preview_uo7lxg.png" alt="Remold Events" style=" width:100px; height:100px; object-fit:contain; filter: drop-shadow(0 0 5px #2563EB);" />
-                            <h5 style="color:#7C3AED">Remold Events</h5>
+                        <div>
+                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1782442502/remold-events-removebg-preview_uo7lxg.png" alt="Remold Events" style=" width:100px; height:100px; object-fit:contain;" />
                         </div>
                     </div>
 
