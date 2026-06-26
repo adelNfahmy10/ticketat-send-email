@@ -42,8 +42,8 @@ module.exports = async (req, res) => {
                 <div style="max-width:700px;margin:auto;background:#ffffff;border-radius:12px;padding:15px;border:1px solid #e5e5e5;">
 
                     <!-- Logos -->
-                    <div style="display:flex;justify-content: center; align-items:center; gap:10px; width: 100%; height: 100%;">
-                        <div>
+                    <div style="display:flex;justify-content: center; align-items:center; width: 100%; height: 100%; text-align: center;">
+                        <div style="margin-right: 20px;">
                             <img src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" alt="Ticketat" style=" width:100px; height:100px; object-fit:contain;" />
                         </div>
                         <div>
