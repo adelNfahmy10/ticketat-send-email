@@ -37,124 +37,133 @@ module.exports = async (req, res) => {
             to,
             subject: "Ticketat - Booking Confirmation | تأكيد الحجز",
             html:`
-                <div style="font-family:Arial,sans-serif;background:#f4f6f9;color:#2c3e50;">
+            <div style="font-family:Arial,sans-serif;background:#f4f6f9;color:#2c3e50;">
 
-                    <div style="max-width:700px;margin:auto;background:#ffffff;border-radius:12px;padding:15px;border:1px solid #e5e5e5;">
+                <div style="max-width:700px;margin:auto;background:#ffffff;border-radius:12px;padding:15px;border:1px solid #e5e5e5;">
 
-                        <!-- Logos -->
-                        <div style=" display:flex; justify-content:space-between; align-items:center; flex-wrap: wrap; gap:20px; width: 100%;" >
-                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" alt="Ticketat" style=" width:100px; height:100px; object-fit:contain; " />
-
-                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1782440402/remold-events_zdt2bo.png" alt="Remold Events" style=" width:100px; height:100px; object-fit:contain; " />
+                    <!-- Logos -->
+                    <div  >
+                        <div style="display:flex; align-items:center; gap:10px; width: 100%;">
+                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" alt="Ticketat" style=" width:100px; height:100px; object-fit:contain; filter: drop-shadow(0 0 5px #2563EB);" />
+                            <h5 style="color:#7C3AED">Ticketat.eg</h5>
                         </div>
-
-                        <hr style="border:none;border-top:1px solid #ececec;margin-bottom:30px;">
-
-                        <!-- Greeting -->
-                        <p style="font-size:16px;">
-                        Hello <strong>${userName}</strong>,
-                        </p>
-
-                        <p dir="rtl" style="font-size:16px;">
-                        مرحبًا <strong>${userName}</strong>،
-                        </p>
-
-                        <!-- English -->
-                        <p style="line-height:1.8;">
-                        Thank you for choosing <strong>Ticketat</strong>.
-                        We are pleased to confirm that your booking has been completed successfully.
-                        We truly appreciate your trust and hope you enjoy a wonderful experience at our event.
-                        </p>
-
-                        <!-- Arabic -->
-                        <p dir="rtl" style="line-height:2;">
-                        شكرًا لاختياركم <strong>Ticketat</strong>.
-                        يسعدنا إبلاغكم بأنه تم إتمام عملية الحجز بنجاح.
-                        نُقدّر ثقتكم بنا، ونتمنى أن تنال خدماتنا رضاكم وأن تستمتعوا بتجربة مميزة في الفعالية.
-                        </p>
-
-                        <!-- Event -->
-                        <div style="background:#f8f9fa;padding:18px;border-radius:10px;border-left:5px solid #27ae60;margin:30px 0;">
-
-                        <p style="margin:0;font-size:14px;color:#888;">
-                            EVENT
-                        </p>
-
-                        <p dir="rtl" style="margin:10px 0 0;font-size:14px;color:#888;">
-                            الفعالية
-                        </p>
-
-                        <h2 style="margin:15px 0 0;color:#2c3e50;">
-                            ${eventName}
-                        </h2>
-
+                        <div style="display:flex; align-items:center; gap:10px; width: 100%;">
+                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1782442502/remold-events-removebg-preview_uo7lxg.png" alt="Remold Events" style=" width:100px; height:100px; object-fit:contain; filter: drop-shadow(0 0 5px #2563EB);" />
+                            <h5 style="color:#7C3AED">Remold Events</h5>
                         </div>
+                    </div>
 
-                        <!-- Next Step -->
-                        <div style="background:#eef7ff;padding:20px;border-radius:10px;border-left:5px solid #3498db;">
+                    <hr style="border:none;border-top:1px solid #ececec;margin-bottom:10px;">
 
-                        <h3 style="margin-top:0;color:#3498db;">
-                            📩 What's Next?
-                        </h3>
 
-                        <p style="line-height:1.8;">
-                            Your event tickets and QR Codes will be sent to you in a
-                            <strong>separate email</strong> shortly.
-                            Please keep an eye on your inbox.
-                            If you don't receive the email within a few minutes,
-                            kindly check your Spam or Junk folder.
-                        </p>
+                    <div>
+                        
+                    </div>
+                    <!-- Greeting -->
+                    <p style="font-size:16px;">
+                    Hello <strong>${userName}</strong>,
+                    </p>
 
-                        <hr style="border:none;border-top:1px solid #dbe9f5;margin:25px 0;">
+                    <p dir="rtl" style="font-size:16px;">
+                    مرحبًا <strong>${userName}</strong>،
+                    </p>
 
-                        <h3 dir="rtl" style="margin-top:0;color:#3498db;">
-                            📩 الخطوة التالية
-                        </h3>
+                    <!-- English -->
+                    <p style="line-height:1.8;">
+                    Thank you for choosing <strong>Ticketat</strong>.
+                    We are pleased to confirm that your booking has been completed successfully.
+                    We truly appreciate your trust and hope you enjoy a wonderful experience at our event.
+                    </p>
 
-                        <p dir="rtl" style="line-height:2;">
-                            سيتم إرسال التذاكر الخاصة بكم ورموز
-                            <strong>QR Code</strong>
-                            في رسالة بريد إلكتروني منفصلة خلال دقائق قليلة.
-                            يُرجى متابعة صندوق الوارد،
-                            وفي حال عدم وصول الرسالة يرجى التحقق من مجلد الرسائل غير المرغوب فيها (Spam).
-                        </p>
+                    <!-- Arabic -->
+                    <p dir="rtl" style="line-height:2;">
+                    شكرًا لاختياركم <strong>Ticketat</strong>.
+                    يسعدنا إبلاغكم بأنه تم إتمام عملية الحجز بنجاح.
+                    نُقدّر ثقتكم بنا، ونتمنى أن تنال خدماتنا رضاكم وأن تستمتعوا بتجربة مميزة في الفعالية.
+                    </p>
 
-                        </div>
+                    <!-- Event -->
+                    <div style="background:#f8f9fa;padding:18px;border-radius:10px;border-left:5px solid #27ae60;margin:30px 0;">
 
-                        <!-- Thank You -->
-                        <div style="margin-top:35px;background:#fffaf2;padding:20px;border-radius:10px;border-left:5px solid #f39c12;">
+                    <p style="margin:0;font-size:14px;color:#888;">
+                        EVENT
+                    </p>
 
-                        <p style="margin:0;line-height:1.8;">
-                            💛 Thank you for trusting Ticketat.
-                            We hope our service met your expectations and wish you an unforgettable event experience.
-                        </p>
+                    <p dir="rtl" style="margin:10px 0 0;font-size:14px;color:#888;">
+                        الفعالية
+                    </p>
 
-                        <p dir="rtl" style="margin-top:18px;line-height:2;">
-                            💛 شكرًا لثقتكم في Ticketat.
-                            نتمنى أن تكون خدماتنا قد نالت إعجابكم،
-                            ونتطلع لأن تستمتعوا بتجربة رائعة في هذه الفعالية.
-                        </p>
-
-                        </div>
-
-                        <!-- Footer -->
-                        <hr style="margin:35px 0;border:none;border-top:1px solid #ececec;">
-
-                        <p style="text-align:center;color:#666;font-size:14px;">
-                        Need help? Our support team is always happy to assist you.
-                        </p>
-
-                        <p dir="rtl" style="text-align:center;color:#666;font-size:14px;">
-                        إذا احتجتم لأي مساعدة، يسعد فريق الدعم لدينا بخدمتكم.
-                        </p>
-
-                        <p style="text-align:center;font-size:12px;color:#999;margin-top:25px;">
-                        © ${new Date().getFullYear()} Ticketat. All rights reserved.
-                        </p>
+                    <h2 style="margin:15px 0 0;color:#2c3e50;">
+                        ${eventName}
+                    </h2>
 
                     </div>
 
+                    <!-- Next Step -->
+                    <div style="background:#eef7ff;padding:20px;border-radius:10px;border-left:5px solid #3498db;">
+
+                    <h3 style="margin-top:0;color:#3498db;">
+                        📩 What's Next?
+                    </h3>
+
+                    <p style="line-height:1.8;">
+                        Your event tickets and QR Codes will be sent to you in a
+                        <strong>separate email</strong> shortly.
+                        Please keep an eye on your inbox.
+                        If you don't receive the email within a few minutes,
+                        kindly check your Spam or Junk folder.
+                    </p>
+
+                    <hr style="border:none;border-top:1px solid #dbe9f5;margin:25px 0;">
+
+                    <h3 dir="rtl" style="margin-top:0;color:#3498db;">
+                        📩 الخطوة التالية
+                    </h3>
+
+                    <p dir="rtl" style="line-height:2;">
+                        سيتم إرسال التذاكر الخاصة بكم ورموز
+                        <strong>QR Code</strong>
+                        في رسالة بريد إلكتروني منفصلة خلال دقائق قليلة.
+                        يُرجى متابعة صندوق الوارد،
+                        وفي حال عدم وصول الرسالة يرجى التحقق من مجلد الرسائل غير المرغوب فيها (Spam).
+                    </p>
+
+                    </div>
+
+                    <!-- Thank You -->
+                    <div style="margin-top:35px;background:#fffaf2;padding:20px;border-radius:10px;border-left:5px solid #f39c12;">
+
+                    <p style="margin:0;line-height:1.8;">
+                        💛 Thank you for trusting Ticketat.
+                        We hope our service met your expectations and wish you an unforgettable event experience.
+                    </p>
+
+                    <p dir="rtl" style="margin-top:18px;line-height:2;">
+                        💛 شكرًا لثقتكم في Ticketat.
+                        نتمنى أن تكون خدماتنا قد نالت إعجابكم،
+                        ونتطلع لأن تستمتعوا بتجربة رائعة في هذه الفعالية.
+                    </p>
+
+                    </div>
+
+                    <!-- Footer -->
+                    <hr style="margin:35px 0;border:none;border-top:1px solid #ececec;">
+
+                    <p style="text-align:center;color:#666;font-size:14px;">
+                    Need help? Our support team is always happy to assist you.
+                    </p>
+
+                    <p dir="rtl" style="text-align:center;color:#666;font-size:14px;">
+                    إذا احتجتم لأي مساعدة، يسعد فريق الدعم لدينا بخدمتكم.
+                    </p>
+
+                    <p style="text-align:center;font-size:12px;color:#999;margin-top:25px;">
+                    © ${new Date().getFullYear()} Ticketat. All rights reserved.
+                    </p>
+
                 </div>
+
+            </div>
             `
 
         });
