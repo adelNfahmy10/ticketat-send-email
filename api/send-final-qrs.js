@@ -69,6 +69,10 @@ module.exports = async (req, res) => {
                                     <div style="margin-bottom:30px;padding:20px;border:1px solid #eee;border-radius:10px;">
                                         <h4>🎫 Ticket #${index + 1}</h4>
 
+                                        <p>
+                                            <strong>Type:</strong> ${qr.type}
+                                        </p>
+
                                         <div style="text-align:center;">
                                             <a
                                                 href="${qrLink}"
