@@ -37,79 +37,88 @@ module.exports = async (req, res) => {
             to,
             subject: "Confirm Your Ticket",
             html: `
-              <div style="font-family: Arial, sans-serif; font-size: 14px; background:#f4f6f8; padding: 20px;">
+            <div style="font-family: Arial, sans-serif; font-size: 14px; background:#f4f6f8; padding: 10px;">
+                <!-- BODY CARD -->
+                <div style="max-width:600px; margin:auto; background:#ffffff; padding:15px; border-radius:10px;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px; margin:0 auto;">
+                        <tr>
+                            <td align="center" style="padding:10px;">
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                        <td align="center" valign="middle" style="background:#000; border-radius:12px; padding:15px;">
+                                            <img
+                                                src="https://res.cloudinary.com/ticketat/image/upload/v1782899628/logo-1_tkuiis.png"
+                                                alt="Ticketat Logo"
+                                                width="140"
+                                                style="display:block; max-width:80px; width:100%; height:auto; border:0;"
+                                            >
+                                        </td>
 
-              <!-- HEADER -->
-              <div style="padding: 15px 0; border-top: 1px dashed #ddd; border-bottom: 1px dashed #ddd; margin-bottom: 20px;">
-                  <table role="presentation" style="width: 100%;">
-                  <tr>
-                      <td style="vertical-align: middle; width: 110px;">
-                      <img 
-                          src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" 
-                          style="width: 80px; display: block;"
-                      >
-                      </td>
+                                        <td width="20"></td>
 
-                      <td style="vertical-align: middle;">
-                      <div style="color:#2c3e50; font-size:18px; font-weight:700;">
-                          Ticketateg
-                      </div>
-                      <div style="color:#777; font-size:13px; margin-top:3px;">
-                          Check Your Ticket
-                      </div>
-                      </td>
-                  </tr>
-                  </table>
-              </div>
+                                        <td align="center" valign="middle" style="background:#000; border-radius:12px; padding:15px;">
+                                            <img
+                                                src="https://res.cloudinary.com/ticketat/image/upload/v1782948163/IMG_5016.JPG_wrvsjw.jpg"
+                                                alt="Partner Logo"
+                                                width="140"
+                                                style="display:block; max-width:80px; width:100%; height:auto; border:0;"
+                                            >
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
 
-              <!-- BODY CARD -->
-              <div style="max-width:600px; margin:auto; background:#ffffff; padding:25px; border-radius:10px;">
+                    <div style="color:#2c3e50; font-size:18px; font-weight:700; text-align:center; margin-bottom:20px;">
+                        Ticketateg | <span style="color:#777; font-size:13px;">Check Your Ticket</span>
+                    </div>
 
-                  <h2 style="text-align:center; color:#2c3e50; margin-bottom:20px;">
-                  🎓 ${eventName}
-                  </h2>
+                    <h2 style="text-align:center; color:#2c3e50; margin-bottom:20px;">
+                    🎓 ${eventName}
+                    </h2>
 
-                  <p>Dear Student <strong>${userName}</strong>,</p>
+                    <p>Dear Student <strong>${userName}</strong>,</p>
 
-                  <p>
-                  Thank you for completing the down payment for <strong>${eventName}</strong>. 
-                  We are excited to be part of this special milestone with you 🎓
-                  </p>
+                    <p>
+                    Thank you for completing the down payment for <strong>${eventName}</strong>. 
+                    We are excited to be part of this special milestone with you 🎓
+                    </p>
 
-                  <p>
-                  Please note that the graduation package collection date will be coordinated with your class representative.
-                  Updates will be shared via WhatsApp group.
-                  </p>
+                    <p>
+                    Please note that the graduation package collection date will be coordinated with your class representative.
+                    Updates will be shared via WhatsApp group.
+                    </p>
 
-                  <p><strong>Kindly note:</strong> Booking for companions is currently not available.</p>
+                    <p><strong>Kindly note:</strong> Booking for companions is currently not available.</p>
 
-                  <p>
-                  The second down payment date will be announced later. At that stage, companion booking will open and your QR code will be sent.
-                  </p>
+                    <p>
+                    The second down payment date will be announced later. At that stage, companion booking will open and your QR code will be sent.
+                    </p>
 
-                  <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
+                    <hr style="margin:20px 0; border:none; border-top:1px solid #eee;">
 
-                  <h3 style="text-align:right; color:#2c3e50;">عزيزنا الطالب/الطالبة</h3>
-                  
-                  <p style="text-align:right; direction='rtl'">
-                  نشكرك على إتمام دفع عربون حفل <strong>${eventName}</strong> 🎓
-                  </p>
+                    <h3 style="text-align:right; color:#2c3e50;">عزيزنا الطالب/الطالبة</h3>
+                    
+                    <p style="text-align:right; direction:'rtl'">
+                    نشكرك على إتمام دفع عربون حفل <strong>${eventName}</strong> 🎓
+                    </p>
 
-                  <p style="text-align:right;">
-                  سيتم تحديد موعد استلام الباكدج بالتنسيق مع ممثل الدفعة وسيتم الإبلاغ عبر جروب الواتساب
-                  </p>
+                    <p style="text-align:right;">
+                    سيتم تحديد موعد استلام الباكدج بالتنسيق مع ممثل الدفعة وسيتم الإبلاغ عبر جروب الواتساب
+                    </p>
 
-                  <p style="text-align:right;">
-                  لا يمكن حجز مرافقين حالياً، وسيتم فتح ذلك لاحقاً مع الدفع الثاني
-                  </p>
+                    <p style="text-align:right;">
+                    لا يمكن حجز مرافقين حالياً، وسيتم فتح ذلك لاحقاً مع الدفع الثاني
+                    </p>
 
-                  <p style="text-align:right;">
-                  مع أطيب التمنيات<br><br>
-                  <strong>Remold Events</strong>
-                  </p>
+                    <p style="text-align:right;">
+                    مع أطيب التمنيات<br><br>
+                    <strong style="color: #9f47d4;">Remold Events</strong>
+                    </p>
 
-              </div>
-              </div>
+                </div>
+            </div>
             `
         });
 
