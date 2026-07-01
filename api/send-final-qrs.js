@@ -38,13 +38,45 @@ module.exports = async (req, res) => {
             from: "Ticketat.eg <anfahmy92@gmail.com>",
             to,
             subject: `Ticketat - Registration Confirmed | ${eventName}`,
-            html: `
-                <div style="font-family:Arial,sans-serif;background:#f4f6f9;padding:30px;">
-                    <div style="max-width:700px;margin:auto;background:#fff;border-radius:12px;padding:30px;">
+            html:`
+                <div style="font-family:Arial,sans-serif;border:1px solid #ddd;">
+                
+                    <div style="max-width:700px;margin:auto;background:#fff;border-radius:12px;padding:10px;">
+                        
+                        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px; margin:0 auto;">
+                            <tr>
+                                <td align="center" style="padding:10px;">
+                                    <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                        <tr>
+                                            <td align="center" valign="middle" style="background:#000; border-radius:12px; padding:15px;">
+                                                <img
+                                                    src="https://res.cloudinary.com/ticketat/image/upload/v1782899628/logo-1_tkuiis.png"
+                                                    alt="Ticketat Logo"
+                                                    width="140"
+                                                    style="display:block; max-width:80px; width:100%; height:auto; border:0;"
+                                                >
+                                            </td>
 
-                        <h2 style="color:#27ae60;text-align:center;">
+                                            <td width="20"></td>
+
+                                            <td align="center" valign="middle" style="background:#000; border-radius:12px; padding:15px;">
+                                                <img
+                                                    src="https://res.cloudinary.com/ticketat/image/upload/v1782948163/IMG_5016.JPG_wrvsjw.jpg"
+                                                    alt="Partner Logo"
+                                                    width="140"
+                                                    style="display:block; max-width:80px; width:100%; height:auto; border:0;"
+                                                >
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+
+                        
+                        <h3 style="color:#27ae60;text-align:center;">
                             ✅ Registration Completed Successfully
-                        </h2>
+                        </h3>
 
                         <p>Hello <strong>${name}</strong>,</p>
 
@@ -70,7 +102,7 @@ module.exports = async (req, res) => {
                                         <h4>🎫 Ticket #${index + 1}</h4>
 
                                         <p>
-                                            <strong>Type:</strong> ${qr.type}
+                                            <strong>Type:</strong> ${qr.type == 'owner' ? 'Graduate' : 'Outcomer'}<br>
                                         </p>
 
                                         <div style="text-align:center;">
@@ -90,10 +122,6 @@ module.exports = async (req, res) => {
                                                 View QR Code
                                             </a>
                                         </div>
-
-                                        <p style="margin-top:10px;text-align:center;font-size:13px;color:#777;">
-                                            ${qrLink}
-                                        </p>
                                     </div>
                                 `;
                             }).join("")
@@ -112,6 +140,7 @@ module.exports = async (req, res) => {
                     </div>
                 </div>
             `
+
         });
 
         return res.status(200).json({
