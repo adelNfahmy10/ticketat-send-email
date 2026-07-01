@@ -42,14 +42,35 @@ module.exports = async (req, res) => {
                 <div style="max-width:700px;margin:auto;background:#ffffff;border-radius:12px;padding:15px;border:1px solid #e5e5e5;">
 
                     <!-- Logos -->
-                    <div style="display:flex;justify-content: center; align-items:center; width: 100%; height: 100%; text-align: center;">
-                        <div style="margin-right: 20px;">
-                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1776549141/mini-icon_iylrx0.png" alt="Ticketat" style=" width:100px; height:100px; object-fit:contain;" />
-                        </div>
-                        <div>
-                            <img src="https://res.cloudinary.com/ticketat/image/upload/v1782442502/remold-events-removebg-preview_uo7lxg.png" alt="Remold Events" style=" width:100px; height:100px; object-fit:contain;" />
-                        </div>
-                    </div>
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px; margin:0 auto;">
+                        <tr>
+                            <td align="center" style="padding:10px;">
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                        <td align="center" valign="middle" style="background:#000; border-radius:12px; padding:15px;">
+                                            <img
+                                                src="https://res.cloudinary.com/ticketat/image/upload/v1782899628/logo-1_tkuiis.png"
+                                                alt="Ticketat Logo"
+                                                width="140"
+                                                style="display:block; max-width:80px; width:100%; height:auto; border:0;"
+                                            >
+                                        </td>
+
+                                        <td width="20"></td>
+
+                                        <td align="center" valign="middle" style="background:#000; border-radius:12px; padding:15px;">
+                                            <img
+                                                src="https://res.cloudinary.com/ticketat/image/upload/v1782948163/IMG_5016.JPG_wrvsjw.jpg"
+                                                alt="Partner Logo"
+                                                width="140"
+                                                style="display:block; max-width:80px; width:100%; height:auto; border:0;"
+                                            >
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
 
                     <hr style="border:none;border-top:1px solid #ececec;margin-bottom:10px;">
 

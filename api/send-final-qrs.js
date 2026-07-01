@@ -111,7 +111,7 @@ module.exports = async (req, res) => {
                                                 target="_blank"
                                                 style="
                                                     display:inline-block;
-                                                    background:#3498db;
+                                                    background:#9f47d4;
                                                     color:#fff;
                                                     padding:12px 20px;
                                                     border-radius:6px;
