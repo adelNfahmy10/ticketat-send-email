@@ -610,7 +610,7 @@ module.exports = async (req, res) => {
           font-size:10px;
           line-height:1.7;
         ">
-          &copy; ${new Date().getFullYear()} Ticketat. All rights reserved.
+          &copy; 2025 Ticketat. All rights reserved.
         </p>
 
       </div>
