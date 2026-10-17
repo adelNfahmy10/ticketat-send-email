@@ -127,39 +127,28 @@ module.exports = async (req, res) => {
       overflow: hidden;
     }
 
-.brand-header {
-  padding: 28px 12px;
-  border-bottom: 1px solid #edf0f5;
-  text-align: center;
-}
+    .brand-header {
+      padding: 22px 16px;
+      border-bottom: 1px solid #edf0f5;
+      background-color: #ffffff;
+    }
 
+    .brand-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+    }
 
-.brand-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  width: 100%;
-  text-align: center;
-}
-
-
-.brand-logo {
-  display: block;
-  width: 190px;
-  max-width: 42%;
-  height: 75px;
-  object-fit: contain;
-  margin: 0 auto;
-}
-
-.brand-divider {
-  display: block;
-  flex: 0 0 1px;
-  width: 1px;
-  height: 48px;
-  background: #e4e8ef;
-}
+    .brand-logo {
+      margin: 0 10px;
+      width: auto;
+      max-width: 155px;
+      max-height: 58px;
+      height: auto;
+      object-fit: contain;
+    }
 
     .brand-divider {
       flex: 0 0 1px;
@@ -260,28 +249,22 @@ module.exports = async (req, res) => {
         border-radius: 10px !important;
       }
 
-        .brand-header {
-    padding: 22px 8px !important;
-    text-align: center !important;
-  }
+      .brand-header {
+        padding: 18px 8px !important;
+      }
 
       .brand-row {
-    justify-content: center !important;
-    align-items: center !important;
-    gap: 12px !important;
-    width: 100% !important;
-    margin: 0 auto !important;
-  }
-  .brand-logo {
-    width: 155px !important;
-    max-width: 43% !important;
-    height: 65px !important;
-    margin: 0 auto !important;
-  }
+        gap: 12px !important;
+      }
 
-   .brand-divider {
-    height: 38px !important;
-  }
+      .brand-logo {
+        max-width: 125px !important;
+        max-height: 48px !important;
+      }
+
+      .brand-divider {
+        height: 32px !important;
+      }
 
       .email-content {
         padding: 24px 17px !important;
