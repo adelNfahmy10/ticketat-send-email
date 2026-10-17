@@ -127,26 +127,39 @@ module.exports = async (req, res) => {
       overflow: hidden;
     }
 
-    .brand-header {
-      padding: 22px 16px;
-      border-bottom: 1px solid #edf0f5;
-      background-color: #ffffff;
-    }
+.brand-header {
+  padding: 28px 12px;
+  border-bottom: 1px solid #edf0f5;
+  text-align: center;
+}
 
-    .brand-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-    }
 
-    .brand-logo {
-      width: auto;
-      max-width: 155px;
-      max-height: 58px;
-      height: auto;
-      object-fit: contain;
-    }
+.brand-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  text-align: center;
+}
+
+
+.brand-logo {
+  display: block;
+  width: 190px;
+  max-width: 42%;
+  height: 75px;
+  object-fit: contain;
+  margin: 0 auto;
+}
+
+.brand-divider {
+  display: block;
+  flex: 0 0 1px;
+  width: 1px;
+  height: 48px;
+  background: #e4e8ef;
+}
 
     .brand-divider {
       flex: 0 0 1px;
@@ -247,22 +260,28 @@ module.exports = async (req, res) => {
         border-radius: 10px !important;
       }
 
-      .brand-header {
-        padding: 18px 8px !important;
-      }
+        .brand-header {
+    padding: 22px 8px !important;
+    text-align: center !important;
+  }
 
       .brand-row {
-        gap: 12px !important;
-      }
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+  }
+  .brand-logo {
+    width: 155px !important;
+    max-width: 43% !important;
+    height: 65px !important;
+    margin: 0 auto !important;
+  }
 
-      .brand-logo {
-        max-width: 125px !important;
-        max-height: 48px !important;
-      }
-
-      .brand-divider {
-        height: 32px !important;
-      }
+   .brand-divider {
+    height: 38px !important;
+  }
 
       .email-content {
         padding: 24px 17px !important;
