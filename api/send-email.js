@@ -103,6 +103,12 @@ module.exports = async (req, res) => {
       font-family: Arial, Helvetica, sans-serif;
       color: #202938;
       -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
     }
 
     img {
@@ -110,6 +116,7 @@ module.exports = async (req, res) => {
       border: 0;
       outline: none;
       text-decoration: none;
+      -ms-interpolation-mode: bicubic;
     }
 
     .email-wrapper {
@@ -121,39 +128,52 @@ module.exports = async (req, res) => {
       width: 100%;
       max-width: 620px;
       margin: 0 auto;
-      background-color: #ffffff;
       border: 1px solid #e7ebf2;
       border-radius: 14px;
       overflow: hidden;
     }
 
     .brand-header {
-      padding: 22px 16px;
+      padding: 26px 12px;
       border-bottom: 1px solid #edf0f5;
-      background-color: #ffffff;
+      text-align: center;
     }
 
-    .brand-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+    .brand-table {
+      width: auto;
+      max-width: 100%;
+      margin: 0 auto;
+    }
+
+    .brand-cell {
+      background-color: #080a0f;
+      border-radius: 12px;
+      padding: 12px;
       text-align: center;
-      gap: 20px;
+      vertical-align: middle;
     }
 
     .brand-logo {
-      margin: 0 10px;
-      width: auto;
-      max-width: 155px;
-      max-height: 58px;
-      height: auto;
+      display: block;
+      width: 150px;
+      max-width: 150px;
+      height: 68px;
+      border: 0;
+      margin: 0 auto;
       object-fit: contain;
     }
 
+    .brand-spacer {
+      width: 20px;
+      min-width: 20px;
+      font-size: 0;
+      line-height: 0;
+    }
+
     .brand-divider {
-      flex: 0 0 1px;
       width: 1px;
-      height: 38px;
+      min-width: 1px;
+      height: 44px;
       background-color: #e4e8ef;
     }
 
@@ -333,32 +353,112 @@ module.exports = async (req, res) => {
     <div class="email-container">
 
       <!-- BRAND HEADER -->
-      <div class="brand-header">
-        <div class="brand-row">
+      <table
+          role="presentation"
+          class="brand-table"
+          align="center"
+          cellpadding="0"
+          cellspacing="0"
+          border="0"
+          style="margin:0 auto;"
+        >
+          <tr>
 
-          <img
-            class="brand-logo"
-            src="${TICKETAT_LOGO}"
-            alt="Ticketat"
-            width="155"
-          />
+            <!-- TICKETAT LOGO -->
+            <td
+              class="brand-cell"
+              align="center"
+              valign="middle"
+              bgcolor="#080a0f"
+              style="
+                background-color:#080a0f;
+                border-radius:12px;
+                padding:12px;
+                text-align:center;
+              "
+            >
+              <img
+                class="brand-logo"
+                src="${TICKETAT_LOGO}"
+                alt="Ticketat"
+                width="150"
+                height="68"
+                style="
+                  display:block;
+                  width:150px;
+                  height:68px;
+                  max-width:150px;
+                  border:0;
+                  margin:0 auto;
+                  object-fit:contain;
+                "
+              />
+            </td>
 
-          ${
-            safePartnerLogo
-              ? `
-                <span class="brand-divider"></span>
+            ${
+              safePartnerLogo
+                ? `
+                  <td
+                    class="brand-spacer"
+                    width="20"
+                    style="width:20px;min-width:20px;font-size:0;line-height:0;"
+                  >&nbsp;</td>
 
-                <img
-                  class="brand-logo"
-                  src="${safePartnerLogo}"
-                  alt="Event Partner"
-                  width="155"
-                />
-              `
-              : ""
-          }
+                  <td
+                    class="brand-divider"
+                    width="1"
+                    bgcolor="#e4e8ef"
+                    style="
+                      width:1px;
+                      min-width:1px;
+                      height:44px;
+                      background-color:#e4e8ef;
+                      font-size:0;
+                      line-height:0;
+                    "
+                  >&nbsp;</td>
 
-        </div>
+                  <td
+                    class="brand-spacer"
+                    width="20"
+                    style="width:20px;min-width:20px;font-size:0;line-height:0;"
+                  >&nbsp;</td>
+
+                  <td
+                    class="brand-cell"
+                    align="center"
+                    valign="middle"
+                    bgcolor="#080a0f"
+                    style="
+                      background-color:#080a0f;
+                      border-radius:12px;
+                      padding:12px;
+                      text-align:center;
+                    "
+                  >
+                    <img
+                      class="brand-logo"
+                      src="${safePartnerLogo}"
+                      alt="Event Partner"
+                      width="150"
+                      height="68"
+                      style="
+                        display:block;
+                        width:150px;
+                        height:68px;
+                        max-width:150px;
+                        border:0;
+                        margin:0 auto;
+                        object-fit:contain;
+                      "
+                    />
+                  </td>
+                `
+                : ""
+            }
+
+          </tr>
+        </table>
       </div>
 
       <!-- MAIN CONTENT -->

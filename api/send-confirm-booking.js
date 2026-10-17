@@ -135,7 +135,6 @@ module.exports = async (req, res) => {
       width: 100%;
       max-width: 620px;
       margin: 0 auto;
-      background-color: #ffffff;
       border: 1px solid #e7ebf2;
       border-radius: 14px;
       overflow: hidden;
@@ -144,7 +143,6 @@ module.exports = async (req, res) => {
     .brand-header {
       padding: 26px 12px;
       border-bottom: 1px solid #edf0f5;
-      background-color: #ffffff;
       text-align: center;
     }
 
