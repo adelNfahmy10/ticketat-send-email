@@ -147,16 +147,15 @@ async function sendOrderConfirmationEmail(orderRef) {
       process.env.APP_URL || "https://uventuo-gilt.vercel.app"
     ).replace(/\/+$/, "");
 
-    const response = await fetch(`${baseUrl}/api/order-success-email`, {
+    const response = await fetch(`${baseUrl}/api/order-success-email.js`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${secret}`,
       },
       body: JSON.stringify({
-        to: claim.email,
-        userName: claim.name,
-        orderId: claim.orderId,
+        to: claim?.email,
+        userName: claim?.name,
+        orderId: claim?.orderId,
       }),
       signal: AbortSignal.timeout(20000),
     });
