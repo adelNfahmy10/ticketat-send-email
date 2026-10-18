@@ -1,21 +1,20 @@
 const admin = require("firebase-admin");
 
-const ALLOWED_ORIGINS = new Set([
-  "https://uventuo-gilt.vercel.app",
-  "http://localhost:4200",
-]);
+const ALLOWED_ORIGIN = "https://uventuo-gilt.vercel.app";
 
 function setCorsHeaders(req, res) {
   const origin = req.headers.origin;
 
-  if (origin && ALLOWED_ORIGINS.has(origin)) {
+  if (origin === ALLOWED_ORIGIN) {
     res.setHeader("Access-Control-Allow-Origin", origin);
     res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader(
+      "Access-Control-Allow-Headers",
+      "Content-Type, Authorization",
+    );
+    res.setHeader("Access-Control-Max-Age", "86400");
   }
-
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.setHeader("Access-Control-Max-Age", "86400");
 }
 
 function initializeFirebase() {
@@ -48,16 +47,6 @@ module.exports = async (req, res) => {
     });
   }
 
-  // Reject browser requests from origins not explicitly allowed.
-  const origin = req.headers.origin;
-
-  if (origin && !ALLOWED_ORIGINS.has(origin)) {
-    return res.status(403).json({
-      success: false,
-      message: "Origin not allowed",
-    });
-  }
-
   try {
     initializeFirebase();
 
@@ -73,6 +62,7 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Paymob environment variables
     const secretKey = process.env.PAYMOB_SECRET_KEY;
     const publicKey = process.env.PAYMOB_PUBLIC_KEY;
     const integrationId = Number(process.env.PAYMOB_INTEGRATION_ID);
@@ -81,15 +71,16 @@ module.exports = async (req, res) => {
 
     if (
       !secretKey ||
-      !publicKey ||
-      !Number.isSafeInteger(integrationId) ||
+      !Number.isInteger(integrationId) ||
       integrationId <= 0 ||
+      !publicKey ||
       !apiBaseUrl ||
       !appUrl
     ) {
-      throw new Error("Paymob environment variables are missing or invalid");
+      throw new Error("Paymob environment variables are missing");
     }
 
+    // Get order from Firestore
     const db = admin.firestore();
     const orderRef = db.collection("orders").doc(orderId);
     const orderSnapshot = await orderRef.get();
@@ -117,6 +108,7 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Total amount in EGP converted to cents
     const amountCents = Math.round(Number(order.total) * 100);
 
     if (!Number.isSafeInteger(amountCents) || amountCents <= 0) {
@@ -133,6 +125,7 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Build actual order items
     const products = Array.isArray(order.products) ? order.products : [];
 
     if (!products.length) {
@@ -171,6 +164,7 @@ module.exports = async (req, res) => {
       };
     });
 
+    // Ensure item totals do not exceed the order total
     const productsTotalCents = items.reduce(
       (sum, item) => sum + item.amount * item.quantity,
       0,
@@ -185,6 +179,7 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Preserve any difference in the order total
     if (additionalAmountCents > 0) {
       items.push({
         name: "Additional Charges",
@@ -194,7 +189,9 @@ module.exports = async (req, res) => {
       });
     }
 
+    // Customer billing data
     const nameParts = String(order.name).trim().split(/\s+/);
+
     const firstName = nameParts.shift() || "Customer";
     const lastName = nameParts.join(" ") || "Customer";
 
@@ -202,12 +199,16 @@ module.exports = async (req, res) => {
     const frontendUrl = appUrl.replace(/\/+$/, "");
 
     const notificationUrl = `${apiUrl}/api/paymob-webhook-uventuo`;
+
     const redirectionUrl = `${frontendUrl}/order-successfully`;
 
+    // Paymob intention payload
     const payload = {
       amount: amountCents,
       currency: "EGP",
       payment_methods: [integrationId],
+
+      // Actual products instead of a single order item
       items,
 
       billing_data: {
@@ -215,7 +216,7 @@ module.exports = async (req, res) => {
         last_name: lastName,
         email: String(order.email).trim(),
         phone_number: String(order.phone).trim(),
-        street: String(order.address || "NA").slice(0, 250),
+        street: String(order.address || "NA"),
         building: "NA",
         apartment: "NA",
         floor: "NA",
@@ -234,6 +235,7 @@ module.exports = async (req, res) => {
       },
     };
 
+    // Create Paymob intention
     const paymobResponse = await fetch(
       "https://accept.paymob.com/v1/intention/",
       {
@@ -243,42 +245,27 @@ module.exports = async (req, res) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(25000),
       },
     );
 
-    const responseText = await paymobResponse.text();
-
-    let result;
-
-    try {
-      result = JSON.parse(responseText);
-    } catch {
-      result = {};
-    }
+    const result = await paymobResponse.json();
 
     if (!paymobResponse.ok) {
-      // Keep detailed diagnostics in server logs, never expose credentials.
       console.error("Paymob intention creation failed", {
         status: paymobResponse.status,
-        response: responseText.slice(0, 2000),
-        orderId,
+        message: result?.message,
+        errors: result?.errors,
       });
 
       return res.status(502).json({
         success: false,
         message: "Could not initialize payment",
-        details:
-          process.env.NODE_ENV === "development"
-            ? result.message || result.error || "Paymob request failed"
-            : undefined,
       });
     }
 
     if (!result.client_secret || !result.intention_order_id) {
       console.error("Unexpected Paymob response", {
-        orderId,
-        responseKeys: Object.keys(result || {}),
+        intentionOrderId: result.intention_order_id,
       });
 
       return res.status(502).json({
@@ -287,12 +274,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    const checkoutUrl = new URL("https://accept.paymob.com/unifiedcheckout/");
-
-    checkoutUrl.searchParams.set("publicKey", publicKey);
-    checkoutUrl.searchParams.set("clientSecret", result.client_secret);
-
-    // Save the Paymob order ID before returning the checkout URL.
+    // Save payment initialization data
     await orderRef.update({
       paymentProvider: "Paymob",
       paymentStatus: "Pending",
@@ -302,10 +284,12 @@ module.exports = async (req, res) => {
       paymentStartedAt: admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    console.log("Paymob checkout initialized", {
-      firestoreOrderId: orderId,
-      paymobOrderId: String(result.intention_order_id),
-    });
+    // Unified Checkout URL
+    const checkoutUrl = new URL("https://accept.paymob.com/unifiedcheckout/");
+
+    checkoutUrl.searchParams.set("publicKey", publicKey);
+
+    checkoutUrl.searchParams.set("clientSecret", result.client_secret);
 
     return res.status(200).json({
       success: true,
