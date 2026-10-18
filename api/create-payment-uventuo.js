@@ -1,4 +1,19 @@
+
 const admin = require("firebase-admin");
+
+const ALLOWED_ORIGIN = "https://uventuo-gilt.vercel.app";
+
+function setCorsHeaders(req, res) {
+  const origin = req.headers.origin;
+
+  if (origin === ALLOWED_ORIGIN) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+    res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Max-Age", "86400");
+  }
+}
 
 function initializeFirebase() {
   if (admin.apps.length) return;
@@ -15,8 +30,15 @@ function initializeFirebase() {
 }
 
 module.exports = async (req, res) => {
+  setCorsHeaders(req, res);
+
+  if (req.method === "OPTIONS") {
+    return res.status(204).end();
+  }
+
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+    res.setHeader("Allow", "POST, OPTIONS");
+
     return res.status(405).json({
       success: false,
       message: "Method not allowed",
@@ -75,7 +97,13 @@ module.exports = async (req, res) => {
       });
     }
 
-    // Amount is read from Firestore, not accepted from Angular.
+    if (order.paymentStatus === "Paid") {
+      return res.status(409).json({
+        success: false,
+        message: "This order has already been paid",
+      });
+    }
+
     const amountCents = Math.round(Number(order.total) * 100);
 
     if (!Number.isSafeInteger(amountCents) || amountCents <= 0) {
@@ -99,9 +127,11 @@ module.exports = async (req, res) => {
     const apiUrl = apiBaseUrl.replace(/\/+$/, "");
     const frontendUrl = appUrl.replace(/\/+$/, "");
 
-    const notificationUrl = `${apiUrl}/api/paymob-webhook-uventuo`;
+    const notificationUrl =
+      `${apiUrl}/api/paymob-webhook-uventuo`;
 
-    const redirectionUrl = `${frontendUrl}/order-successfully`;
+    const redirectionUrl =
+      `${frontendUrl}/order-successfully`;
 
     const payload = {
       amount: amountCents,
@@ -146,7 +176,7 @@ module.exports = async (req, res) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(payload),
-      },
+      }
     );
 
     const result = await paymobResponse.json();
@@ -181,10 +211,13 @@ module.exports = async (req, res) => {
       paymobOrderId: String(result.intention_order_id),
       paymobIntentionId: result.id || null,
       paymobSpecialReference: orderId,
-      paymentStartedAt: admin.firestore.FieldValue.serverTimestamp(),
+      paymentStartedAt:
+        admin.firestore.FieldValue.serverTimestamp(),
     });
 
-    const checkoutUrl = new URL("https://accept.paymob.com/unifiedcheckout/");
+    const checkoutUrl = new URL(
+      "https://accept.paymob.com/unifiedcheckout/"
+    );
 
     checkoutUrl.searchParams.set("publicKey", publicKey);
     checkoutUrl.searchParams.set("clientSecret", result.client_secret);
