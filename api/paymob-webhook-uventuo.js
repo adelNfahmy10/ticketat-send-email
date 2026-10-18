@@ -69,6 +69,134 @@ function initializeFirebase() {
   });
 }
 
+/**
+ * Sends the order confirmation email only after Firestore confirms
+ * that both order.status and order.paymentStatus are Paid.
+ */
+async function sendOrderConfirmationEmail(orderRef) {
+  const secret = process.env.ORDER_EMAIL_API_SECRET;
+
+  if (!secret) {
+    throw new Error("ORDER_EMAIL_API_SECRET is missing");
+  }
+
+  const db = admin.firestore();
+
+  // Claim the email job to reduce duplicate sends from concurrent callbacks.
+  const claim = await db.runTransaction(async (tx) => {
+    const snapshot = await tx.get(orderRef);
+
+    if (!snapshot.exists) {
+      throw new Error("Order not found when sending confirmation email");
+    }
+
+    const order = snapshot.data();
+
+    if (order.status !== "Paid" || order.paymentStatus !== "Paid") {
+      return { status: "not-paid" };
+    }
+
+    if (
+      order.orderConfirmationEmailSent === true ||
+      order.orderConfirmationEmailStatus === "sent"
+    ) {
+      return { status: "already-sent" };
+    }
+
+    const sendingAt = order.orderConfirmationEmailSendingAt?.toDate?.();
+    const isSending = order.orderConfirmationEmailStatus === "sending";
+    const isRecentClaim =
+      sendingAt && Date.now() - sendingAt.getTime() < 2 * 60 * 1000;
+
+    if (isSending && isRecentClaim) {
+      return { status: "in-progress" };
+    }
+
+    if (!order.email) {
+      throw new Error("Order email is missing");
+    }
+
+    tx.update(orderRef, {
+      orderConfirmationEmailStatus: "sending",
+      orderConfirmationEmailSendingAt:
+        admin.firestore.FieldValue.serverTimestamp(),
+      orderConfirmationEmailLastError: admin.firestore.FieldValue.delete(),
+    });
+
+    return {
+      status: "claimed",
+      email: order.email,
+      name: order.name || "Valued Customer",
+      orderId: orderRef.id,
+    };
+  });
+
+  if (claim.status === "not-paid" || claim.status === "already-sent") {
+    return claim.status;
+  }
+
+  if (claim.status === "in-progress") {
+    // Return a retryable webhook error rather than acknowledging an
+    // email attempt that another request is still processing.
+    throw new Error("Order confirmation email is already being processed");
+  }
+
+  try {
+    // APP_URL should be the root URL of this Vercel project.
+    const baseUrl = (
+      process.env.APP_URL || "https://uventuo-gilt.vercel.app"
+    ).replace(/\/+$/, "");
+
+    const response = await fetch(`${baseUrl}/api/order-success-email`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${secret}`,
+      },
+      body: JSON.stringify({
+        to: claim.email,
+        userName: claim.name,
+        orderId: claim.orderId,
+      }),
+      signal: AbortSignal.timeout(20000),
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok || result.success !== true) {
+      throw new Error(
+        result.message || `Email endpoint failed: ${response.status}`,
+      );
+    }
+
+    await orderRef.update({
+      orderConfirmationEmailSent: true,
+      orderConfirmationEmailStatus: "sent",
+      orderConfirmationEmailSentAt:
+        admin.firestore.FieldValue.serverTimestamp(),
+      orderConfirmationEmailSendingAt: admin.firestore.FieldValue.delete(),
+      orderConfirmationEmailLastError: admin.firestore.FieldValue.delete(),
+    });
+
+    console.log("Order confirmation email sent", {
+      firestoreOrderId: claim.orderId,
+    });
+
+    return "sent";
+  } catch (error) {
+    // Allow a later verified callback to retry the email.
+    await orderRef.update({
+      orderConfirmationEmailStatus: "pending",
+      orderConfirmationEmailSendingAt: admin.firestore.FieldValue.delete(),
+      orderConfirmationEmailLastError: String(
+        error.message || "Email delivery failed",
+      ).slice(0, 300),
+    });
+
+    throw error;
+  }
+}
+
 module.exports = async (req, res) => {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
@@ -111,7 +239,7 @@ module.exports = async (req, res) => {
       !paymobOrderId ||
       !/^\d+$/.test(paymobOrderId)
     ) {
-      console.error("Paymob webhook contains invalid transaction/order IDs");
+      console.error("Paymob webhook contains invalid IDs");
 
       return res.status(200).json({
         success: true,
@@ -120,7 +248,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    // A valid HMAC does not automatically mean a successful payment.
+    // HMAC validity alone does not establish payment success.
     const paymentSucceeded =
       transaction.success === true &&
       transaction.pending === false &&
@@ -147,7 +275,6 @@ module.exports = async (req, res) => {
 
     const db = admin.firestore();
 
-    // The creation endpoint saves Paymob's intention_order_id here.
     const ordersSnapshot = await db
       .collection("orders")
       .where("paymobOrderId", "==", paymobOrderId)
@@ -171,13 +298,9 @@ module.exports = async (req, res) => {
     const orderRef = ordersSnapshot.docs[0].ref;
     const paymentRef = db.collection("paymobTransactions").doc(transactionId);
 
-    const result = await db.runTransaction(async (firestoreTransaction) => {
-      const paymentSnapshot = await firestoreTransaction.get(paymentRef);
-      const orderSnapshot = await firestoreTransaction.get(orderRef);
-
-      if (paymentSnapshot.exists) {
-        return "duplicate";
-      }
+    const result = await db.runTransaction(async (tx) => {
+      const paymentSnapshot = await tx.get(paymentRef);
+      const orderSnapshot = await tx.get(orderRef);
 
       if (!orderSnapshot.exists) {
         return "order-not-found";
@@ -185,7 +308,7 @@ module.exports = async (req, res) => {
 
       const order = orderSnapshot.data();
 
-      // Compare Paymob's received amount with the amount stored for the order.
+      // Verify the amount even when a callback is being retried.
       const expectedAmountCents = Math.round(Number(order.total) * 100);
       const receivedAmountCents = Number(transaction.amount_cents);
 
@@ -198,20 +321,27 @@ module.exports = async (req, res) => {
         return "amount-mismatch";
       }
 
-      // Never overwrite an order already paid by another transaction.
+      if (String(order.paymobOrderId) !== paymobOrderId) {
+        return "order-id-mismatch";
+      }
+
+      // A repeated callback must still be allowed to retry a failed email.
+      if (paymentSnapshot.exists) {
+        return order.status === "Paid" && order.paymentStatus === "Paid"
+          ? "duplicate"
+          : "duplicate-unpaid";
+      }
+
+      // Do not overwrite an order already paid by another transaction.
       if (order.paymentStatus === "Paid" || order.status === "Paid") {
         return "already-paid";
       }
 
-      if (
-        order.paymentStatus !== "Pending" ||
-        order.status !== "Pending" ||
-        String(order.paymobOrderId) !== paymobOrderId
-      ) {
+      if (order.paymentStatus !== "Pending" || order.status !== "Pending") {
         return "order-not-payable";
       }
 
-      firestoreTransaction.update(orderRef, {
+      tx.update(orderRef, {
         status: "Paid",
         paymentStatus: "Paid",
         paymobTransactionId: transactionId,
@@ -220,7 +350,7 @@ module.exports = async (req, res) => {
         paidAt: admin.firestore.FieldValue.serverTimestamp(),
       });
 
-      firestoreTransaction.create(paymentRef, {
+      tx.create(paymentRef, {
         transactionId,
         paymobOrderId,
         firestoreOrderId: orderRef.id,
@@ -233,31 +363,28 @@ module.exports = async (req, res) => {
       return "paid";
     });
 
-    if (result !== "paid") {
-      console.warn("Paymob callback not applied to order", {
-        transactionId,
-        paymobOrderId,
-        result,
-      });
-    } else {
-      console.log("Paymob payment confirmed", {
-        transactionId,
-        paymobOrderId,
-        firestoreOrderId: orderRef.id,
-      });
+    console.log("Paymob webhook transaction result", {
+      transactionId,
+      paymobOrderId,
+      firestoreOrderId: orderRef.id,
+      result,
+    });
+
+    // Send or retry the email only for a confirmed paid order.
+    if (["paid", "duplicate", "already-paid"].includes(result)) {
+      await sendOrderConfirmationEmail(orderRef);
     }
 
-    // Acknowledge verified callbacks so Paymob doesn't keep retrying
-    // callbacks that cannot be resolved automatically.
     return res.status(200).json({
       success: true,
       received: true,
-      processed: result === "paid" || result === "duplicate",
+      processed: ["paid", "duplicate", "already-paid"].includes(result),
       result,
     });
   } catch (error) {
     console.error("Paymob webhook error:", error.message);
 
+    // A 500 allows Paymob to retry when email delivery fails.
     return res.status(500).json({
       success: false,
       message: "Webhook processing failed",
