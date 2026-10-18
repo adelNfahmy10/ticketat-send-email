@@ -118,7 +118,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    if (!order.email || !order.name || !order.phone) {
+    if (!order.name || !order.phone) {
       return res.status(400).json({
         success: false,
         message: "Order customer details are incomplete",
@@ -214,7 +214,7 @@ module.exports = async (req, res) => {
       billing_data: {
         first_name: firstName,
         last_name: lastName,
-        email: String(order.email).trim(),
+        email: String(order.email || "customer@example.com").trim(),
         phone_number: String(order.phone).trim(),
         street: String(order.address || "NA"),
         building: "NA",
