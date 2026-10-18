@@ -200,7 +200,7 @@ module.exports = async (req, res) => {
 
     const notificationUrl = `${apiUrl}/api/paymob-webhook-uventuo`;
 
-    const redirectionUrl = `${frontendUrl}/order-successfully`;
+    const redirectionUrl = `${frontendUrl}/order-successfully?orderId=${encodeURIComponent(orderId)}`;
 
     // Paymob intention payload
     const payload = {
