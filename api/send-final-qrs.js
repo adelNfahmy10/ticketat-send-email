@@ -843,7 +843,7 @@ module.exports = async (req, res) => {
         </p>
 
         <p class="footer-note">
-          &copy; ${currentYear}
+          &copy; 2025
           Ticketat. All rights reserved.
         </p>
 
